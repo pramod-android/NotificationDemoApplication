@@ -1,10 +1,13 @@
 package in.freedom.notificationdemoapplication;
 
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +21,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import static in.freedom.notificationdemoapplication.App.CHANNEL_1_ID;
+import static in.freedom.notificationdemoapplication.App.CHANNEL_2_ID;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -27,12 +33,13 @@ public class MainActivity extends AppCompatActivity {
     Button startServiceBt;
     TextView receiverTv;
     MyBroadCastReceiver myBroadCastReceiver;
+    private NotificationManagerCompat notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        notificationManager = NotificationManagerCompat.from(this);
         initializeMembers();
 
 //        setListener();
@@ -139,5 +146,35 @@ public class MainActivity extends AppCompatActivity {
 
         // make sure to unregister your receiver after finishing of this activity
         unregisterReceiver(myBroadCastReceiver);
+    }
+
+
+    public void sendOnChannel1(View v) {
+        String title = "Title";
+        String message = " High priority message";
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .build();
+
+        notificationManager.notify(1, notification);
+    }
+
+    public void sendOnChannel2(View v) {
+        String title = "Title";
+        String message = "message";
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_2_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build();
+
+        notificationManager.notify(2, notification);
     }
 }
